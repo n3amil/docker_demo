@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    user: "1000:50"
+    env_file:
+      - local.env
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./database/:/var/lib/mysql/
+    ports:
+      - "3306:3306"
+  web:
+    image: httpd:2.4
+    ports:
+      - "80:80"
+    env_file:
+      - local.env
+    depends_on:
+      - db
+    volumes:
+      - ./html/:/usr/local/apache2/htdocs/
+    links:
+      - db
